@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบการจัดการเรียนรู้ รายวิชาชีววิทยา</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
+        
+        body { 
+            background-color: #f0f4f8; 
+            font-family: 'Sarabun', sans-serif; 
+            color: #333;
+        }
+
+        /* --- ส่วนตกแต่งทั่วไป --- */
+        .title-text { color: #00897B; font-weight: bold; font-size: 1.4rem; line-height: 1.4; }
+        .subtitle-text { color: #555; font-size: 0.9rem; }
+        .dashed-divider { border-top: 3px dashed #17a2b8; margin: 15px 0; opacity: 0.5; }
+        .section-page { display: none; } /* ใช้ซ่อน/แสดงหน้าต่างๆ */
+        
+        /* --- การ์ดและฟอร์มต่างๆ --- */
+        .login-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 25px; border: 2px solid #e0e0e0; }
+        .form-card { background: white; border: 2px dashed #4CAF50; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .form-card-blue { border-color: #2196F3; }
+        .form-card-red { border-color: #F44336; }
+        .form-control, .form-select { border-radius: 8px; background-color: #fdfdfd; }
+        label { font-weight: 600; color: #444; margin-bottom: 5px; font-size: 0.95rem;}
+
+        /* --- ปุ่มเมนู Dashboard 10 เมนู --- */
+        .menu-btn { 
+            border-radius: 12px; cursor: pointer; padding: 15px 5px; color: white; 
+            font-weight: bold; text-align: center; font-size: 0.95rem; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;
+        }
+        .menu-btn:hover { transform: scale(1.05); }
+        .menu-btn i { font-size: 1.8rem; margin-bottom: 8px; }
+        
+        /* โทนสีปุ่มตามวิดีโอ */
+        .bg-1 { background-color: #4CAF50; } .bg-2 { background-color: #2196F3; } 
+        .bg-3 { background-color: #3F51B5; } .bg-4 { background-color: #9C27B0; } 
+        .bg-5 { background-color: #E91E63; } .bg-6 { background-color: #FF9800; } 
+        .bg-7 { background-color: #F44336; } .bg-8 { background-color: #FFC107; color: #333 !important; } 
+        .bg-9 { background-color: #009688; } .bg-10 { background-color: #1976D2; }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-4 mb-5" style="max-width: 550px;">
+        
+        <div class="text-center mb-4">
+            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/3/36/UBRU_Logo.png/200px-UBRU_Logo.png" width="80" alt="Logo" class="mb-2">
+            <h2 class="title-text">ระบบการจัดการเรียนรู้ใน<br>ชั้นเรียนรายวิชาชีววิทยา</h2>
+            <p class="subtitle-text">คณะวิทยาศาสตร์ มหาวิทยาลัยราชภัฏอุบลราชธานี</p>
+        </div>
+
+        <div id="page-login" class="section-page login-card mx-auto" style="display: block;">
+            <h4 class="text-center text-secondary mb-3">🔐 ลงชื่อเข้าสู่ระบบ</h4>
+            <div class="dashed-divider"></div>
+            
+            <div class="mb-3">
+                <label>เลือกสถานะ 👤:</label>
+                <select class="form-select text-secondary fw-bold" id="loginRole" onchange="toggleLoginForm()">
+                    <option value="teacher">👩‍🏫 อาจารย์ผู้สอน</option>
+                    <option value="student">👨‍🎓 นักศึกษา</option>
+                </select>
+            </div>
+            
+            <div id="form-teacher">
+                <div class="mb-3">
+                    <label>ชื่อผู้ใช้ (Username) 👤:</label>
+                    <input type="text" id="t_username" class="form-control" placeholder="เช่น admin (หรือปล่อยว่างหากใช้รหัสเดิม)" disabled>
+                    <small class="text-muted">* แอดมินใช้เพียงรหัสผ่านในการเข้าสู่ระบบ</small>
+                </div>
+                <div class="mb-4">
+                    <label>รหัสผ่านอาจารย์ 🔑:</label>
+                    <input type="password" id="t_password" class="form-control" placeholder="********">
+                </div>
+                <button onclick="loginSystem()" id="btnLoginTeacher" class="btn btn-success w-100 rounded-pill fw-bold py-2 mb-2">
+                    เข้าสู่ระบบอาจารย์ 🌿
+                </button>
+                <button class="btn btn-secondary w-100 rounded-pill py-2" style="background-color: #6c757d;" onclick="alert('ระบบสมัครสมาชิกอาจารย์กำลังปรับปรุง')">
+                    📝 สมัครใช้งานสำหรับอาจารย์ท่านอื่น
+                </button>
+            </div>
+
+            <div id="form-student" style="display: none;">
+                <div class="mb-3">
+                    <label>อีเมลนักศึกษา 📧:</label>
+                    <input type="email" id="s_email" class="form-control" placeholder="example@ubru.ac.th">
+                </div>
+                <div class="mb-4">
+                    <label>รหัสผ่าน 🔑:</label>
+                    <input type="password" id="s_password" class="form-control" placeholder="รหัสผ่าน (หากเข้าระบบครั้งแรกให้ตั้งไว้)">
+                </div>
+                <button onclick="loginSystem()" id="btnLoginStudent" class="btn btn-primary w-100 rounded-pill fw-bold py-2">
+                    เข้าสู่ระบบนักศึกษา 🎓
+                </button>
+            </div>
+        </div>
+<div id="page-teacher-dashboard" class="section-page">
+            <div class="text-center mb-4">
+                <h5 class="text-primary fw-bold">👨‍🏫 ระบบอาจารย์ผู้สอน</h5>
+                <h4 class="fw-bold" style="color: #00897B;" id="display-teacher-name">Dr.Kritsada Seejandee 🔬</h4>
+            </div>
+            
+            <div class="row g-2 mb-4">
+                <div class="col-6"><div class="menu-btn bg-1" onclick="showPage('page-menu-1')"><i class="fa-solid fa-user-graduate"></i>1. นักศึกษา</div></div>
+                <div class="col-6"><div class="menu-btn bg-2" onclick="showPage('page-menu-2')"><i class="fa-solid fa-camera"></i>2. เช็คชื่อ</div></div>
+                <div class="col-6"><div class="menu-btn bg-3" onclick="showPage('page-menu-3')"><i class="fa-solid fa-folder-open"></i>3. ส่งงาน</div></div>
+                <div class="col-6"><div class="menu-btn bg-4" onclick="showPage('page-menu-4')"><i class="fa-solid fa-chart-bar"></i>4. ประวัติมาเรียน</div></div>
+                <div class="col-6"><div class="menu-btn bg-5" onclick="showPage('page-menu-5')"><i class="fa-solid fa-chart-line"></i>5. ประวัติส่งงาน</div></div>
+                <div class="col-6"><div class="menu-btn bg-6" onclick="showPage('page-menu-6')"><i class="fa-solid fa-envelope-open-text"></i>6. ใบลา</div></div>
+                <div class="col-6"><div class="menu-btn bg-7" onclick="showPage('page-menu-7')"><i class="fa-solid fa-bullseye"></i>7. คะแนนสอบ</div></div>
+                <div class="col-6"><div class="menu-btn bg-8" onclick="showPage('page-menu-8')"><i class="fa-solid fa-trophy"></i>8. ตัดเกรด</div></div>
+                <div class="col-6"><div class="menu-btn bg-9" onclick="showPage('page-menu-9')"><i class="fa-solid fa-campground"></i>9. กิจกรรม/อบรม</div></div>
+                <div class="col-6"><div class="menu-btn bg-10" onclick="showPage('page-menu-10')"><i class="fa-solid fa-book"></i>10. ทะเบียน<br><small style="font-size: 11px; font-weight: normal;">นักศึกษา ครุศาสตร์ฯ</small></div></div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6"><button class="btn w-100 rounded-pill text-white fw-bold" style="background-color: #d32f2f;" onclick="showPage('page-manage-admin')"><i class="fa-solid fa-gear"></i> จัดการบัญชีผู้สอน</button></div>
+                <div class="col-6"><button class="btn btn-secondary w-100 rounded-pill fw-bold" onclick="logoutSystem()"><i class="fa-solid fa-door-open"></i> ออก</button></div>
+            </div>
+        </div>
+
+        <div id="page-menu-1" class="section-page">
+            <button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            
+            <div class="form-card">
+                <h5 class="text-success fw-bold"><i class="fa-solid fa-seedling"></i> เพิ่มข้อมูลนักศึกษา</h5>
+                <hr class="text-success text-opacity-25">
+                <div class="row g-2 mb-2">
+                    <div class="col-4"><label>เลขที่:</label><input type="text" id="m1_no" class="form-control"></div>
+                    <div class="col-8"><label>รหัสนักศึกษา:</label><input type="text" id="m1_id" class="form-control"></div>
+                </div>
+                <div class="mb-2"><label>ชื่อจริง:</label><input type="text" id="m1_fname" class="form-control"></div>
+                <div class="mb-2"><label>นามสกุล:</label><input type="text" id="m1_lname" class="form-control"></div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6"><label>เพศ ⚧️:</label><select id="m1_gender" class="form-select"><option>ชาย</option><option>หญิง</option></select></div>
+                    <div class="col-6"><label>อีเมล:</label><input type="email" id="m1_email" class="form-control"></div>
+                </div>
+                <div class="mb-3"><label>ห้องเรียน (Room) 🏫:</label><select id="m1_room" class="form-select"><option>1</option><option>2</option></select></div>
+                <div class="mb-3"><label>อัปโหลดรูปภาพ (ไม่บังคับ):</label><input type="file" class="form-control"></div>
+                
+                <button class="btn btn-success w-100 fw-bold mb-2"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+                <div class="d-flex gap-2">
+                    <button class="btn text-white w-50 fw-bold" style="background-color: #9C27B0;"><i class="fa-solid fa-plus"></i> เพิ่มห้องเรียนใหม่</button>
+                    <button class="btn btn-danger w-50 fw-bold"><i class="fa-solid fa-xmark"></i> ลบห้องเรียน</button>
+                </div>
+            </div>
+
+            <div class="form-card form-card-blue">
+                <h5 class="text-primary fw-bold"><i class="fa-solid fa-file-import"></i> นำเข้าข้อมูลนักศึกษาด้วยไฟล์ Excel</h5>
+                <hr class="text-primary text-opacity-25">
+                <p class="text-muted" style="font-size: 0.8rem;">โครงสร้างไฟล์ต้องมีคอลัมน์: เลขที่, รหัสนักศึกษา, ชื่อจริง, นามสกุล, เพศ, อีเมล, ห้องเรียน และสามารถเพิ่ม "ลิงก์รูปภาพ" ได้</p>
+                <input type="file" class="form-control mb-3">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary w-50 fw-bold"><i class="fa-solid fa-upload"></i> นำเข้าข้อมูล</button>
+                    <button class="btn btn-dark w-50 fw-bold"><i class="fa-solid fa-download"></i> โหลดไฟล์ต้นแบบ</button>
+                </div>
+            </div>
+            
+            <div class="form-card" style="border-color: #FF9800;">
+                <h5 class="text-warning fw-bold text-dark"><i class="fa-solid fa-id-card"></i> บัตรประจำตัวนักศึกษา (พิมพ์ยกห้องได้)</h5>
+            </div>
+        </div>
+
+        <div id="page-menu-2" class="section-page">
+            <button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card form-card-blue">
+                <h5 class="text-primary fw-bold"><i class="fa-solid fa-camera"></i> สแกน QR Code: การเข้าเรียน</h5>
+                <hr class="text-primary text-opacity-25">
+                <div class="mb-2"><label>เลือกวิชา 📚:</label><select class="form-select"><option>ชีววิทยา</option></select></div>
+                <div class="mb-2"><label>เลือกห้องเรียน 🏫:</label><select class="form-select"><option>1</option><option>2</option></select></div>
+                <div class="d-flex gap-2 mb-3">
+                    <button class="btn text-white w-50" style="background-color: #9C27B0;"><i class="fa-solid fa-plus"></i> เพิ่มวิชา</button>
+                    <button class="btn btn-danger w-50"><i class="fa-solid fa-xmark"></i> ลบวิชา</button>
+                </div>
+                <div class="mb-2"><label>วันที่ 📅:</label><input type="date" class="form-control" id="m2_date"></div>
+                <div class="mb-2"><label>คาบเรียน/สัปดาห์ที่ 🏷️:</label><input type="text" class="form-control" placeholder="เช่น สัปดาห์ที่ 1"></div>
+                <div class="mb-3"><label>สถานะ (ก่อนสแกน):</label>
+                    <select class="form-select"><option>🟢 มาเรียน</option><option>🔴 ขาดเรียน</option><option>🟡 ลา</option></select>
+                </div>
+
+                <div class="p-3 mb-3 text-center" style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 10px;">
+                    <label class="fw-bold text-warning text-dark"><i class="fa-solid fa-barcode"></i> ใช้เครื่องสแกนบาร์โค้ด (USB/Bluetooth):</label>
+                    <input type="text" class="form-control mt-2 text-center" placeholder="คลิกที่นี่ แล้วยิง QR Code...">
+                </div>
+
+                <button class="btn text-white w-100 fw-bold py-2 mb-2" style="background-color: #00b0ff;"><i class="fa-solid fa-video"></i> เปิดกล้องเช็คชื่อ (Webcam/มือถือ)</button>
+                <div class="d-flex gap-2 mb-2">
+                    <button class="btn btn-outline-secondary w-50 fw-bold" style="font-size:0.85rem;"><i class="fa-solid fa-user-pen"></i> ลงชื่อด้วยมือ (รายบุคคล)</button>
+                    <button class="btn text-white w-50 fw-bold" style="background-color: #9C27B0; font-size:0.85rem;"><i class="fa-solid fa-users"></i> ลงชื่อด้วยมือ (หลายคน)</button>
+                </div>
+                <button class="btn btn-danger w-100 fw-bold"><i class="fa-solid fa-video-slash"></i> ปิดกล้อง</button>
+            </div>
+        </div>
+
+        <div id="page-menu-3" class="section-page">
+            <button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card" style="border-color: #9C27B0;">
+                <h5 class="fw-bold" style="color: #9C27B0;"><i class="fa-solid fa-cloud-arrow-up"></i> ระบบสั่งงานและรับไฟล์ส่งงานออนไลน์</h5>
+                <hr style="border-color: #9C27B0;">
+                <button class="btn text-white w-100 fw-bold" style="background-color: #9C27B0;"><i class="fa-solid fa-plus"></i> เพิ่มภาระงานใหม่</button>
+            </div>
+            
+            <div class="form-card" style="border-color: #FFC107;">
+                <h5 class="fw-bold text-warning text-dark"><i class="fa-solid fa-qrcode"></i> สแกน QR Code: เช็คการส่งงาน</h5>
+                <hr class="text-warning text-opacity-25">
+                <div class="mb-2"><label>เลือกวิชา 📚:</label><select class="form-select"><option>ชีววิทยา</option></select></div>
+                <div class="mb-2"><label>เลือกห้องเรียน 🏫:</label><select class="form-select"><option>2</option></select></div>
+                <div class="mb-2"><label>ชื่องาน 📁:</label><input type="text" class="form-control" placeholder="เช่น สมุดจดบทที่ 1"></div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6"><label>⭐ ให้คะแนนงานนี้:</label><input type="number" class="form-control" placeholder="คะแนนที่ได้"></div>
+                    <div class="col-6"><label>📌 คะแนนเต็ม:</label><input type="number" class="form-control" placeholder="คะแนนเต็ม"></div>
+                </div>
+                <button class="btn btn-warning w-100 fw-bold py-2 mb-2"><i class="fa-solid fa-video"></i> เปิดกล้องรับงาน (Webcam/มือถือ)</button>
+            </div>
+        </div>
+
+        <div id="page-menu-4" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card" style="border-color: #9C27B0;"><h5 class="fw-bold" style="color:#9C27B0;"><i class="fa-solid fa-chart-bar"></i> 4. ประวัติการมาเรียน</h5><hr><button class="btn btn-outline-success btn-sm"><i class="fa-solid fa-file-excel"></i> ส่งออกกราฟ Excel</button> <button class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-file-word"></i> ส่งออกกราฟ Word</button></div>
+        </div>
+
+        <div id="page-menu-5" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card form-card-red"><h5 class="fw-bold text-danger"><i class="fa-solid fa-chart-line"></i> 5. ประวัติการส่งงาน</h5><hr><button class="btn btn-outline-success btn-sm"><i class="fa-solid fa-file-excel"></i> ส่งออก Excel</button></div>
+        </div>
+
+        <div id="page-menu-6" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card" style="border-color: #FF9800;"><h5 class="fw-bold text-warning text-dark"><i class="fa-solid fa-envelope-open-text"></i> 6. รายการใบลา</h5><hr><p class="text-muted text-center">ยังไม่มีข้อมูลนักศึกษาขอลาในขณะนี้</p></div>
+        </div>
+
+        <div id="page-menu-7" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card form-card-red"><h5 class="fw-bold text-danger"><i class="fa-solid fa-bullseye"></i> 7. ระบบกรอกคะแนนสอบ (จัดกลุ่มตามห้อง)</h5><hr><button class="btn btn-success w-100 mb-2"><i class="fa-solid fa-check"></i> ประกาศผลสอบทั้งหมด</button></div>
+        </div>
+
+        <div id="page-menu-8" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card" style="border-color: #FFC107;"><h5 class="fw-bold text-warning text-dark"><i class="fa-solid fa-trophy"></i> 8. ระบบสรุปคะแนนและตัดเกรด</h5><hr><p class="text-muted text-center" style="font-size:0.8rem;">*ระบบจะรวมคะแนนจาก: คะแนนเก็บ + กลางภาค/ปลายภาค + พิเศษ</p></div>
+        </div>
+
+        <div id="page-menu-9" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card" style="border-color: #009688;"><h5 class="fw-bold" style="color: #009688;"><i class="fa-solid fa-campground"></i> 9. ระบบบันทึกการเข้าร่วมกิจกรรม/อบรม</h5><hr><input type="text" class="form-control mb-2" placeholder="ชื่อกิจกรรม"><button class="btn text-white w-100 fw-bold" style="background-color: #009688;"><i class="fa-solid fa-plus"></i> สร้างรายการกิจกรรม</button></div>
+        </div>
+
+        <div id="page-menu-10" class="section-page"><button class="btn btn-sm btn-outline-secondary mb-3 rounded-pill" onclick="showPage('page-teacher-dashboard')">⬅️ ย้อนกลับ</button>
+            <div class="form-card form-card-blue"><h5 class="fw-bold text-primary"><i class="fa-solid fa-book"></i> 10. แฟ้มสะสมรายชื่อนักศึกษา (ทะเบียนหลัก)</h5><hr><button class="btn btn-outline-primary w-100"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลนักศึกษา (ทะเบียน)</button></div>
+        </div>
+        </div>
+<div id="page-student-dashboard" class="section-page">
+            <div class="text-center mb-4">
+                <h5 class="text-primary fw-bold">🎓 ระบบนักศึกษา</h5>
+                <h5 class="fw-bold" style="color: #00897B;" id="display-student-name">ชื่อ-นามสกุล นักศึกษา</h5>
+                <p class="text-muted mb-2" style="font-size: 0.9rem;">
+                    เลขที่: <span id="s_no">1</span> | รหัสนักศึกษา: <span id="s_id">641234567</span><br>
+                    ห้อง <span id="s_room">1</span>
+                </p>
+                
+                <div class="p-3 mb-3 mx-auto" style="border: 2px dashed #2196F3; border-radius: 15px; max-width: 280px; background-color: white;">
+                    <p class="fw-bold text-primary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-qrcode"></i> QR Code สำหรับสแกนเข้าเรียน/ส่งงาน</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Student123" id="student-qr" alt="QR Code" width="150" class="mb-2">
+                </div>
+            </div>
+
+            <div class="row g-2 mb-4">
+                <div class="col-3"><button class="btn btn-primary w-100 fw-bold" style="font-size: 0.75rem; padding: 12px 2px;"><i class="fa-solid fa-book-open fa-lg mb-1"></i><br>ผลการเรียน</button></div>
+                <div class="col-3"><button class="btn w-100 fw-bold text-white" style="background-color: #607D8B; font-size: 0.75rem; padding: 12px 2px;"><i class="fa-solid fa-cloud-arrow-up fa-lg mb-1"></i><br>ส่งงาน</button></div>
+                <div class="col-3"><button class="btn btn-warning w-100 fw-bold text-dark" style="font-size: 0.75rem; padding: 12px 2px;"><i class="fa-solid fa-envelope-open-text fa-lg mb-1"></i><br>ส่งใบลา</button></div>
+                <div class="col-3"><button class="btn btn-danger w-100 fw-bold" style="font-size: 0.75rem; padding: 12px 2px;" onclick="logoutSystem()"><i class="fa-solid fa-power-off fa-lg mb-1"></i><br>ออก</button></div>
+            </div>
+
+            <div class="row g-2 mb-4 text-center">
+                <div class="col-6"><div class="p-2 border rounded bg-white shadow-sm"><small class="text-muted fw-bold">คะแนนรวม</small><h5 class="text-info fw-bold mb-0 mt-1">รอยืนยัน</h5></div></div>
+                <div class="col-6"><div class="p-2 border rounded bg-white shadow-sm"><small class="text-muted fw-bold">คะแนนสอบ</small><h5 class="text-warning fw-bold mb-0 mt-1">รอยืนยัน</h5></div></div>
+                <div class="col-6"><div class="p-2 border rounded bg-white shadow-sm"><small class="text-muted fw-bold">เกรดที่ได้</small><h5 class="text-success fw-bold mb-0 mt-1">รอยืนยัน</h5></div></div>
+                <div class="col-6"><div class="p-2 border rounded bg-white shadow-sm"><small class="text-muted fw-bold">ร้อยละมาเรียน</small><h5 class="text-primary fw-bold mb-0 mt-1">0% (0/0)</h5></div></div>
+            </div>
+
+            <div class="form-card form-card-blue py-3"><h6 class="fw-bold text-primary m-0"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการเข้าเรียน</h6></div>
+            <div class="form-card py-3"><h6 class="fw-bold text-success m-0"><i class="fa-solid fa-clipboard-check"></i> ประวัติคะแนนเก็บ/ส่งงาน</h6></div>
+            <div class="form-card py-3" style="border-color: #009688;"><h6 class="fw-bold m-0" style="color: #009688;"><i class="fa-solid fa-campground"></i> ประวัติเข้าร่วมกิจกรรม</h6></div>
+            <div class="form-card py-3" style="border-color: #FF9800;"><h6 class="fw-bold text-warning text-dark m-0"><i class="fa-solid fa-envelope-open-text"></i> ประวัติการส่งใบลา</h6></div>
+        </div>
+
+    </div> <script>
+        // 📌📌📌 นำ URL ที่ Deploy ได้จาก Google Apps Script (ตอนที่ 1) มาวางแทนที่ลิงก์ด้านล่างนี้ 📌📌📌
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVBmek4wP35On5p3univ1R7uncENML26KMjMJEWwgShAA0Eb2WNdqi-Qj2xZjZLFfb1g/exec";
+
+        // ฟังก์ชันสลับการแสดงผลฟอร์มล็อกอิน
+        function toggleLoginForm() {
+            const role = document.getElementById("loginRole").value;
+            if (role === "teacher") {
+                document.getElementById("form-teacher").style.display = "block";
+                document.getElementById("form-student").style.display = "none";
+            } else {
+                document.getElementById("form-teacher").style.display = "none";
+                document.getElementById("form-student").style.display = "block";
+            }
+        }
+
+        // ฟังก์ชันเปลี่ยนหน้าจอ (ระบบ SPA - Single Page Application)
+        function showPage(pageId) {
+            // ซ่อนทุกหน้าที่มีคลาส section-page
+            document.querySelectorAll('.section-page').forEach(el => el.style.display = 'none');
+            // แสดงเฉพาะหน้าที่ต้องการ
+            document.getElementById(pageId).style.display = 'block';
+            // เลื่อนจอขึ้นบนสุดเมื่อเปลี่ยนหน้า
+            window.scrollTo(0, 0); 
+        }
+
+        // ฟังก์ชันล็อกอินเข้าสู่ระบบ
+        function loginSystem() {
+            const role = document.getElementById("loginRole").value;
+            
+            if (role === "teacher") {
+                // ----- ล็อกอินอาจารย์ -----
+                const pass = document.getElementById("t_password").value;
+                if (!pass) return alert("กรุณากรอกรหัสผ่านอาจารย์");
+                
+                // ตรวจสอบรหัสผ่านแอดมินตามที่คุณระบุ
+                if (pass === "biology") {
+                    alert("ยินดีต้อนรับเข้าสู่ระบบ Dr.Kritsada Seejandee");
+                    showPage("page-teacher-dashboard");
+                } else {
+                    alert("รหัสผ่านอาจารย์ไม่ถูกต้อง!");
+                    document.getElementById("t_password").value = "";
+                }
+            } else {
+                // ----- ล็อกอินนักศึกษา -----
+                const email = document.getElementById("s_email").value;
+                const pass = document.getElementById("s_password").value;
+                if (!email || !pass) return alert("กรุณากรอกอีเมลและรหัสผ่านนักศึกษาให้ครบถ้วน");
+                
+                // จำลองการเข้าระบบนักศึกษา (นำชื่อส่วนหน้าของอีเมลมาโชว์เป็นชื่อนักศึกษา)
+                document.getElementById("display-student-name").innerText = email.split('@')[0]; 
+                showPage("page-student-dashboard");
+            }
+        }
+
+        // ฟังก์ชันออกจากระบบ
+        function logoutSystem() {
+            // ล้างค่าในช่องกรอกรหัสทั้งหมด
+            document.getElementById("t_password").value = "";
+            document.getElementById("s_email").value = "";
+            document.getElementById("s_password").value = "";
+            // กลับไปหน้า Login
+            showPage("page-login");
+        }
+    </script>
+</body>
+</html>
